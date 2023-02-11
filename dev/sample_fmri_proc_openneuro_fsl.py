@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-subid = 'sub-jgrADc1NT'
-sess = 1
+subid = 'sub-jgrADc11L' #'sub-jgrADc1NT'
+sess = 2
 
 t1_orig = f'/home/ajoshi/projects/rodfmri/dev/test_cases/{subid}/ses-{sess}/anat/{subid}_ses-{sess}_acq-RARE_T2w.nii'
 

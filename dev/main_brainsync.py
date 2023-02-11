@@ -20,10 +20,11 @@ msk = v.get_fdata() > 0
 print(v)
 
 
+sub1 = '/home/ajoshi/projects/rodfmri/dev/test_cases/sub-jgrADc11L/ses-1/func/sub-jgrADc11L_ses-1_task-rest_acq-EPI_b.atlas.nii.gz'
+#'/home/ajoshi/projects/rodfmri/dev/test_cases/sub-jgrADc1NT/ses-1/func/sub-jgrADc1NT_ses-1_task-rest_acq-EPI_b.atlas.nii.gz'
 
-sub1 = '/home/ajoshi/projects/rodfmri/dev/test_cases/sub-jgrADc1NT/ses-1/func/sub-jgrADc1NT_ses-1_task-rest_acq-EPI_b.atlas.nii.gz'
-
-sub2 = '/home/ajoshi/projects/rodfmri/dev/test_cases/sub-jgrADc1NT/ses-2/func/sub-jgrADc1NT_ses-2_task-rest_acq-EPI_b.atlas.nii.gz'
+sub2 = '/home/ajoshi/projects/rodfmri/dev/test_cases/sub-jgrADc11L/ses-2/func/sub-jgrADc11L_ses-2_task-rest_acq-EPI_b.atlas.nii.gz'
+#'/home/ajoshi/projects/rodfmri/dev/test_cases/sub-jgrADc1NT/ses-2/func/sub-jgrADc1NT_ses-2_task-rest_acq-EPI_b.atlas.nii.gz'
 
 
 f1 = nb.load(sub1)
