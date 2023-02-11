@@ -1,10 +1,19 @@
 import os
+import subprocess
 
 subid = 'sub-jgrADc1NT'
-sess = 2
+sess = 1
 
 t1_orig = f'/home/ajoshi/projects/rodfmri/dev/test_cases/{subid}/ses-{sess}/anat/{subid}_ses-{sess}_acq-RARE_T2w.nii'
+
+
 fmri_orig = f'/home/ajoshi/projects/rodfmri/dev/test_cases/{subid}/ses-{sess}/func/{subid}_ses-{sess}_task-rest_acq-EPI_bold.nii'
+
+#_, TR = os.system(f'3dinfo -tr {fmri_orig}') # get TR
+x = subprocess.check_output([f'3dinfo -tr {fmri_orig}'],shell=True)
+TR = float(x)
+hp = 0.005
+lp = 0.1
 
 t1 = t1_orig[:-4] + '_ds.nii.gz'
 t1_bse = t1[:-4] + '.bse.nii.gz'
@@ -30,9 +39,25 @@ fmri = fmri_orig #[:-4] + '.nii.gz'
 #zip_cmd = f'gzip -cvf {fmri_orig} > {fmri}'
 #os.system(zip_cmd)
 
-#fmri resample to regular grid
+# resample to regular grid
 
 
+# grand mean scaling
+fmri_gms = fmri_orig[:-4] + '.gms.nii.gz'
+gms_cmd = f'fslmaths {fmri} -ing 10000 {fmri_gms} -odt float'
+os.system(gms_cmd)
+
+
+# band pass filtering and detrending
+
+
+fmri_filt = fmri_orig[:-4] + '.filt.nii.gz'
+cmd_bpf = f'3dBandpass -dt {TR} -prefix {fmri_filt} {hp} {lp} {fmri_gms}'
+
+os.system(cmd_bpf)
+
+
+#%% FUNC->standard (3mm)
 
 
 # create fMRI mean image to be used as registration target
@@ -67,5 +92,6 @@ os.system(lin_align_cmd)
 
 # Warp fmri to atlas
 fmri_warped = fmri[:-7] + '.atlas.nii.gz'
-linwarp_cmd = f'{linreg_bin} -in {fmri} -ref {atlas} -out {fmri_warped} -applyxfm -init {mat_file} -interp trilinear'
+linwarp_cmd = f'{linreg_bin} -in {fmri_filt} -ref {atlas} -out {fmri_warped} -applyxfm -init {mat_file} -interp trilinear'
 os.system(linwarp_cmd)
+

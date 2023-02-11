@@ -40,11 +40,13 @@ f2img, _, _ =  normalizeData(f2img)
 
 
 diff = np.sqrt(np.sum((f1img - f2img)**2, axis=0))
+corr = np.sum(f1img*f2img, axis=0)
 
 
 f2img_sync, _ = brainSync(f1img, f2img)
 
 diff_sync = np.sqrt(np.sum((f1img - f2img_sync)**2, axis=0))
+corr_sync = np.sum(f1img*f2img_sync, axis=0)
 
 
 vout = np.zeros(v.shape)
@@ -53,9 +55,18 @@ vout[msk] = diff
 unsyn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
 unsyn_img.to_filename('unsynced.nii.gz')
 
+vout[msk] = corr
+unsyn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
+unsyn_img.to_filename('corr_unsynced.nii.gz')
+
+
 vout = np.zeros(v.shape)
 vout[msk] = diff_sync
 
 syn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
 syn_img.to_filename('synced.nii.gz')
+
+vout[msk] = corr_sync
+syn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
+syn_img.to_filename('corr_synced.nii.gz')
 
