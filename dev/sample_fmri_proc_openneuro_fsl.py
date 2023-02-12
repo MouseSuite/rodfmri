@@ -4,7 +4,7 @@ import nibabel as nib
 
 
 subid = 'sub-jgrADc11L' #'sub-jgrADc1NT'
-sess = 1
+sess = 2
 
 t1_orig = f'/home/ajoshi/projects/rodfmri/dev/test_cases/{subid}/ses-{sess}/anat/{subid}_ses-{sess}_acq-RARE_T2w.nii'
 
@@ -54,8 +54,8 @@ os.system(apply_mask_cmd)
 FWHM = 0.6
 sigma=FWHM/2.3548
 
-outfile = fmri[:-4] + '.smooth.nii.gz'
-smooth_cmd = f'fslmaths {fmri_masked} -kernel gauss {sigma} -fmean -mas {fmri_mask} {outfile}';
+fmri_smooth = fmri[:-4] + '.smooth.nii.gz'
+smooth_cmd = f'fslmaths {fmri_masked} -kernel gauss {sigma} -fmean -mas {fmri_mask} {fmri_smooth}'
 os.system(smooth_cmd)
 #zip_cmd = f'gzip -cvf {fmri_orig} > {fmri}'
 #os.system(zip_cmd)
@@ -65,7 +65,7 @@ os.system(smooth_cmd)
 
 # grand mean scaling
 fmri_gms = fmri_orig[:-4] + '.gms.nii.gz'
-gms_cmd = f'fslmaths {fmri_masked} -ing 10000 {fmri_gms} -odt float'
+gms_cmd = f'fslmaths {fmri_smooth} -ing 10000 {fmri_gms} -odt float'
 os.system(gms_cmd)
 
 
@@ -84,7 +84,7 @@ os.system(cmd_bpf)
 # create fMRI mean image to be used as registration target
 fmri_example = fmri_orig[:-4] + '.mean.nii.gz'
 
-mean_cmd = f'3dTstat -mean -prefix {fmri_example} {fmri_masked}'
+mean_cmd = f'3dTstat -mean -prefix {fmri_example} {fmri_smooth}'
 os.system(mean_cmd)
 
 
