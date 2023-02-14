@@ -11,9 +11,6 @@ t1_orig = f'/home/ajoshi/projects/rodfmri/dev/test_cases/{subid}/ses-{sess}/anat
 
 fmri_orig = f'/home/ajoshi/projects/rodfmri/dev/test_cases/{subid}/ses-{sess}/func/{subid}_ses-{sess}_task-rest_acq-EPI_bold.nii'
 
-
-
-
 #_, TR = os.system(f'3dinfo -tr {fmri_orig}') # get TR
 x = subprocess.check_output([f'3dinfo -tr {fmri_orig}'],shell=True)
 TR = float(x)
