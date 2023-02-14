@@ -4,10 +4,10 @@ import nibabel as nib
 
 
 
-def fmri_proc_fsl(t1_orig, fmri_orig, BrainSuitePath,atlas):
+def fmri_proc_fsl(t1_orig, fmri, BrainSuitePath,atlas):
 
     # Get TR
-    x = subprocess.check_output([f'3dinfo -tr {fmri_orig}'],shell=True)
+    x = subprocess.check_output([f'3dinfo -tr {fmri}'],shell=True)
     TR = float(x)
 
 
@@ -28,13 +28,7 @@ def fmri_proc_fsl(t1_orig, fmri_orig, BrainSuitePath,atlas):
 
     os.system(t1_bse_cmd)
 
-
     # zip fmri
-
-
-
-    fmri = fmri_orig #[:-4] + '.nii.gz'
-
 
     # mask image
 
@@ -54,14 +48,14 @@ def fmri_proc_fsl(t1_orig, fmri_orig, BrainSuitePath,atlas):
     fmri_smooth = fmri[:-4] + '.smooth.nii.gz'
     smooth_cmd = f'fslmaths {fmri_masked} -kernel gauss {sigma} -fmean -mas {fmri_mask} {fmri_smooth}'
     os.system(smooth_cmd)
-    #zip_cmd = f'gzip -cvf {fmri_orig} > {fmri}'
+    #zip_cmd = f'gzip -cvf {fmri} > {fmri}'
     #os.system(zip_cmd)
 
     # resample to regular grid
 
 
     # grand mean scaling
-    fmri_gms = fmri_orig[:-4] + '.gms.nii.gz'
+    fmri_gms = fmri[:-4] + '.gms.nii.gz'
     gms_cmd = f'fslmaths {fmri_smooth} -ing 10000 {fmri_gms} -odt float'
     os.system(gms_cmd)
 
@@ -69,7 +63,7 @@ def fmri_proc_fsl(t1_orig, fmri_orig, BrainSuitePath,atlas):
     # band pass filtering and detrending
 
 
-    fmri_filt = fmri_orig[:-4] + '.filt.nii.gz'
+    fmri_filt = fmri[:-4] + '.filt.nii.gz'
     cmd_bpf = f'3dBandpass -dt {TR} -prefix {fmri_filt} {hp} {lp} {fmri_gms}'
 
     os.system(cmd_bpf)
@@ -79,7 +73,7 @@ def fmri_proc_fsl(t1_orig, fmri_orig, BrainSuitePath,atlas):
 
 
     # create fMRI mean image to be used as registration target
-    fmri_example = fmri_orig[:-4] + '.mean.nii.gz'
+    fmri_example = fmri[:-4] + '.mean.nii.gz'
 
     mean_cmd = f'3dTstat -mean -prefix {fmri_example} {fmri_smooth}'
     os.system(mean_cmd)
@@ -109,7 +103,7 @@ def fmri_proc_fsl(t1_orig, fmri_orig, BrainSuitePath,atlas):
 
 
     # Warp fmri to atlas
-    fmri_warped = fmri[:-7] + '.filt.atlas.nii.gz'
+    fmri_warped = fmri[:-4] + '.filt.atlas.nii.gz'
     linwarp_cmd = f'{linreg_bin} -in {fmri_filt} -ref {atlas} -out {fmri_warped} -applyxfm -init {mat_file} -interp trilinear'
     os.system(linwarp_cmd)
 
