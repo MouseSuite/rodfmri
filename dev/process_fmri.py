@@ -129,7 +129,6 @@ def process(outdir, datapath,subjID,session,atlas):
 def main():
 	# atlas = '/deneb_disk/RodentTools/Atlases/DSURQE_40micron_UCLA/DSURQE_40micron_64_average_masked.nii.gz'
 	# datasetPath='/home/ajoshi/projects/rodfmri/dev/test_cases/'
-	atlasfile='hello'
 	subid = 'sub-jgrADc11L' #'sub-jgrADc1NT'
 	sess = 1
 
