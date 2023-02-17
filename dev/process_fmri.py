@@ -40,6 +40,7 @@ def process(outdir, datapath,subjID,session,atlas):
 	os.system(f'install -d {outputFuncDir}')
 
 	print(dscolors.blue+'resampling'+dscolors.clear)
+	print(dscolors.green+f'3dinfo -tr {fmri_orig}'+dscolors.clear)
 	x = subprocess.check_output([f'3dinfo -tr {fmri_orig}'],shell=True)
 	TR = float(x)
 	hp = 0.005
@@ -113,12 +114,14 @@ def process(outdir, datapath,subjID,session,atlas):
 	t1_bse_lin = outputAnatBase + '.lin.atlas.nii.gz'
 	mat_file = outputAnatBase + '.lin.mat'
 	lin_align_cmd = f'{linreg_bin} -in {t1_bse_fmri} -ref {atlas} -out {t1_bse_lin} -omat {mat_file}'
+	print(dscolors.green+lin_align_cmd+dscolors.clear)
 	os.system(lin_align_cmd)
 
 	# Warp fmri to atlas
 	print(dscolors.blue+'Warping fmri to atlas...'+dscolors.clear)
 	fmri_warped = outputFuncBase + '.filt.atlas.nii.gz'
 	linwarp_cmd = f'{linreg_bin} -in {fmri_filt} -ref {atlas} -out {fmri_warped} -applyxfm -init {mat_file} -interp trilinear'
+	print(dscolors.green+linwarp_cmd+dscolors.clear)
 	os.system(linwarp_cmd)
 
 	print(dscolors.green+'Finished.'+dscolors.clear)
@@ -126,9 +129,10 @@ def process(outdir, datapath,subjID,session,atlas):
 def main():
 	# atlas = '/deneb_disk/RodentTools/Atlases/DSURQE_40micron_UCLA/DSURQE_40micron_64_average_masked.nii.gz'
 	# datasetPath='/home/ajoshi/projects/rodfmri/dev/test_cases/'
+	atlasfile='hello'
 	subid = 'sub-jgrADc11L' #'sub-jgrADc1NT'
 	sess = 1
-	
+
 	parser = argparse.ArgumentParser(description='rodent anatomical pipeline')
 	parser.add_argument('-p','--datapath', type=str, help='study directory', required=True)
 	parser.add_argument('-o','--output-dir', type=str, help='study directory', required=True)
@@ -136,7 +140,7 @@ def main():
 	parser.add_argument('--session', type=int, default=1, help='subject ID')
 	parser.add_argument('-a','--atlas', type=str, default='dsurqe64', help='anatomical atlas by name',choices={'dsurqe', 'dsurqe64', 'dsurqe128', 'eae'})
 	parser.add_argument('-b','--brainsuite-path', type=str, help='path to BrainSuite installation')
-	parser.add_argument('--atlas-image', type=str, default='', help='anatomical atlas image filename (overrides -a)')
+	parser.add_argument('--atlas-image', type=str, help='anatomical atlas image filename (overrides -a)')
 	args = parser.parse_args()
 	if (args.atlas=='dsurqe'): atlasfile=atlasPath+'/DSURQE_40micron_UCLA/DSURQE_40micron_average_masked.nii.gz'
 	elif (args.atlas=='dsurqe64'): atlasfile=atlasPath+'/DSURQE_40micron_UCLA/DSURQE_40micron_64_average_masked.nii.gz'
