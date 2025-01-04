@@ -3,10 +3,12 @@ from fmri_proc_fsl import fmri_proc_fsl
 import os
 
 
-sublist = glob.glob('/home/ajoshi/Desktop/openneuro/sub*')
-BrainSuitePath = '/home/ajoshi/BrainSuite21a'
+sublist = glob.glob('/deneb_disk/RodentTools/data/openneuro/ds001890/sub*')
+BrainSuitePath = '/home/ajoshi/Software/BrainSuite23a'
 atlas = '/deneb_disk/RodentTools/Atlases/DSURQE_40micron_UCLA/DSURQE_40micron_64_average_masked.nii.gz'
 
+# set environment variable BrainSuiteMCRPath to the path of BrainSuite Matlab Compiler Runtime
+os.environ['BrainSuiteMCR'] = '/home/ajoshi/Software/MATLAB/MATLAB_Runtime/R2023a'
 
 for s in sublist:
 

@@ -4,22 +4,17 @@ import nibabel as nib
 
 
 
-def fmri_proc_fsl(t1_orig, fmri, BrainSuitePath,atlas):
+def fmri_proc_fsl(t1_orig, fmri, BrainSuitePath,atlas,hp = 0.005,lp = 0.1,FWHM = 0.6):
 
     # Get TR
     x = subprocess.check_output([f'3dinfo -tr {fmri}'],shell=True)
     TR = float(x)
 
-
-    # HPF and LP cutoffs
-    hp = 0.005
-    lp = 0.1
-
+    # Resample T1 to 0.1mm isotropic
     t1 = t1_orig[:-4] + '_ds.nii.gz'
     t1_bse = t1[:-4] + '.bse.nii.gz'
-    resample_bin = f'{BrainSuitePath}/svreg/bin/svreg_resample.sh'
+    t1_resample_cmd = f'flirt -in {t1_orig} -ref {t1_orig} -applyisoxfm 0.1 -out {t1}'
 
-    t1_resample_cmd = f'{resample_bin} {t1_orig} {t1} -size 100 100 100'
     os.system(t1_resample_cmd)
 
 
@@ -42,7 +37,6 @@ def fmri_proc_fsl(t1_orig, fmri, BrainSuitePath,atlas):
     os.system(apply_mask_cmd)
 
     # spatial smoothing
-    FWHM = 0.6
     sigma=FWHM/2.3548
 
     fmri_smooth = fmri[:-4] + '.smooth.nii.gz'
