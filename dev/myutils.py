@@ -18,6 +18,7 @@ def plot_fmri_overlay(fmri_image_path, anatomical_image_path,
     - time_point (int, optional): Specific time point to extract from the 4D fMRI image.
     - average_time (bool): Whether to average across time points if time_point is not specified.
     """
+    subid = fmri_image_path.split('/')[-1].split('_')[0]
     # Load images
     fmri_img_4d = image.load_img(fmri_image_path)
     anat_img = image.load_img(anatomical_image_path)
@@ -35,6 +36,6 @@ def plot_fmri_overlay(fmri_image_path, anatomical_image_path,
     
     # Plot overlay
     plotting.plot_stat_map(fmri_img_3d, bg_img=anat_img, threshold=threshold, alpha=0.5,
-                           display_mode='ortho', dim=-0.5, title='fMRI Activation Overlay', output_file=fmri_image_path[:-7] + '.png')
+                           display_mode='ortho', dim=-0.5, title=f'fmri image:{subid}', output_file=fmri_image_path[:-7] + '.png', cut_coords=(0, 0, 0))  
     #plotting.show()
     #plt.pause(1)  # Pause for a short time to allow the plot to render
