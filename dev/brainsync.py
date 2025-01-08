@@ -24,8 +24,8 @@ def normalizeData(pre_signal):
     #    if sp.any(sp.isnan(pre_signal)):
     #        print('there are NaNs in the data matrix, making them zero')
 
-    pre_signal[sp.isnan(pre_signal)] = 0
-    mean_vector = sp.mean(pre_signal, axis=0, keepdims=True)
+    pre_signal[np.isnan(pre_signal)] = 0
+    mean_vector = np.mean(pre_signal, axis=0, keepdims=True)
     normed_signal = pre_signal - mean_vector
     norm_vector = sp.linalg.norm(normed_signal, axis=0, keepdims=True)
     norm_vector[norm_vector == 0] = 1e-116
@@ -47,10 +47,10 @@ def brainSync(X, Y):
         print('The input is possibly transposed. Please check to make sure \
 that the input is time x vertices!')
 
-    C = sp.dot(X, Y.T)
+    C = np.dot(X, Y.T)
     U, _, V = sp.linalg.svd(C)
-    R = sp.dot(U, V)
-    Y2 = sp.dot(R, Y)
+    R = np.dot(U, V)
+    Y2 = np.dot(R, Y)
     return Y2, R
 
 def IDrefsub_BrainSync(sub_data):
@@ -64,7 +64,7 @@ def IDrefsub_BrainSync(sub_data):
     '''
     nSub = sub_data.shape[2]
     print('calculating pairwise correlations between all pairs of ' + str(nSub) + ' subjects')
-    dist_all_orig = sp.zeros([nSub, nSub])
+    dist_all_orig = np.zeros([nSub, nSub])
     dist_all_rot = dist_all_orig.copy()
 
     for ind1 in range(nSub):
@@ -130,7 +130,7 @@ def groupBrainSync(S):
     for i in range(SubNum):  #initializeing O
         #        R = 2 * rnd.random(size=(numT, numT)) - 1; #define a random matrix with unity distributian from -1 to 1
         Os[:, :, i] = special_ortho_group.rvs(
-            numT)  #(sp.dot(R , R.T)^(-1/2) , R;  #orthogonal rows of matrix
+            numT)  #(np.dot(R , R.T)^(-1/2) , R;  #orthogonal rows of matrix
 
     Error = 1
     PreError = 1
@@ -145,14 +145,14 @@ def groupBrainSync(S):
     # Initialize PreError from gloal average
     X = sp.zeros((numT, numV))
     for j in range(SubNum):  #calculate X
-        X = sp.dot(Os[:, :, j], S[:, :, j]) + X
+        X = np.dot(Os[:, :, j], S[:, :, j]) + X
 
     X = X / SubNum
     InError = 0
 
     for j in range(SubNum):
-        etemp = sp.dot(Os[:, :, j], S[:, :, j]) - X
-        InError = InError + sp.trace(sp.dot(etemp,
+        etemp = np.dot(Os[:, :, j], S[:, :, j]) - X
+        InError = InError + sp.trace(np.dot(etemp,
                                             etemp.T))  #calculating error
 
     # Find best Orthogognal map, by minimizing error (distance) from average
@@ -164,24 +164,24 @@ def groupBrainSync(S):
             X = sp.zeros((numT, numV))
             for j in range(SubNum):  #calculate X average excluded subject i
                 if j != i:
-                    X = sp.dot(Os[:, :, j], S[:, :, j]) + X
+                    X = np.dot(Os[:, :, j], S[:, :, j]) + X
             # Y is i excluded average
             Y = X / (SubNum - 1)
 
             # Update Orthogonal matrix with BrainSync projection technique
-            U, _, V = sp.linalg.svd(sp.dot(Y, S[:, :, i].T))
-            Os[:, :, i] = sp.dot(U, V)
+            U, _, V = sp.linalg.svd(np.dot(Y, S[:, :, i].T))
+            Os[:, :, i] = np.dot(U, V)
 
     # print('calculate error')
         Error = 0
         # New Average with all subject updated orthogonal matrix
         # update last subject outside loop
-        X2 = (X + sp.dot(Os[:, :, i], S[:, :, i])) / SubNum
+        X2 = (X + np.dot(Os[:, :, i], S[:, :, i])) / SubNum
 
         # Calculate error of all subjects from average map
         for j in range(SubNum):
-            etemp = sp.dot(Os[:, :, j], S[:, :, j]) - X2
-            Error = Error + sp.trace(sp.dot(etemp,
+            etemp = np.dot(Os[:, :, j], S[:, :, j]) - X2
+            Error = Error + sp.trace(np.dot(etemp,
                                             etemp.T))  #calculating error
 
         relcost = np.abs(Error - PreError) / np.abs(InError)
