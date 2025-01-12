@@ -22,7 +22,7 @@ from scipy import stats
 ctrl_diff = sess_diff_fmri[tg_or_wt == 1, :]
 tg_diff = sess_diff_fmri[tg_or_wt == 2, :]
 
-t_stat, p_val = stats.ttest_ind(ctrl_diff, tg_diff, axis=0)
+t_stat, p_val = stats.ttest_ind(tg_diff, ctrl_diff, axis=0)
 
 
 nan_msk = np.isnan(t_stat)
@@ -54,25 +54,25 @@ p_val_img.to_filename("p_val.nii.gz")
 from nilearn import plotting
 import matplotlib.pyplot as plt
 
-fig, ax = plt.subplots(1, 2, figsize=(20, 5))
-
+fig, ax = plt.subplots(2, 1, figsize=(9, 6))
 
 plotting.plot_stat_map(
-    t_stat_img,
+    "t_stat.nii.gz",
     bg_img=atlas,
-    threshold=0,
+    threshold=1e-6,
     alpha=0.5,
     display_mode="ortho",
     dim=-0.5,
     title="t_stat",
     axes=ax[0],
     colorbar=True,
-    vmax=3,
-    cmap="hot",
+    vmax=5,
+    vmin=-5,
+    cmap="coolwarm",
 )
 
 plotting.plot_stat_map(
-    p_val_img,
+    "p_val.nii.gz",
     bg_img=atlas,
     threshold=0,
     alpha=0.5,
@@ -81,7 +81,7 @@ plotting.plot_stat_map(
     title="p_val",
     axes=ax[1],
     colorbar=True,
-    vmax=0.01,
+    vmax=0.05,
     cmap="hot_r",  # Inverted colormap
 )
 
@@ -109,7 +109,7 @@ vout[msk] = tg_diff_mean - ctrl_diff_mean
 diff_mean_img = nb.Nifti1Image(vout, v.affine, v.header)
 diff_mean_img.to_filename("diff_mean.nii.gz")
 
-fig, ax = plt.subplots(1, 3, figsize=(20, 5))
+fig, ax = plt.subplots(3, 1, figsize=(15, 30))
 
 plotting.plot_stat_map(
     ctrl_diff_mean_img,
