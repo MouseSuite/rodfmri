@@ -153,4 +153,5 @@ for i, sub in enumerate(sublist):
 # save the data
 np.savez_compressed("sess_diff_fmri.npz", sess_diff_fmri=sess_diff_fmri, tg_or_wt=tg_or_wt, sublist=sublist, msk=msk, atlas=atlas)
 
-print(f"Done with {sub.split('/')[-1]}")
+print(f"Done Reading the data")
+
