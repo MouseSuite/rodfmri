@@ -55,3 +55,4 @@ Thumbs.db
 dev/.vscode/launch.json
 .vscode/launch.json
 dev/*.png
+dev/*.npz
