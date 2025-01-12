@@ -85,7 +85,7 @@ plotting.plot_stat_map(
     cmap="hot_r",  # Inverted colormap
 )
 
-plt.tight_layout()
+#plt.tight_layout()
 plt.savefig("t_stat_p_val.png")
 
 
@@ -109,7 +109,7 @@ vout[msk] = tg_diff_mean - ctrl_diff_mean
 diff_mean_img = nb.Nifti1Image(vout, v.affine, v.header)
 diff_mean_img.to_filename("diff_mean.nii.gz")
 
-fig, ax = plt.subplots(3, 1, figsize=(15, 30))
+fig, ax = plt.subplots(3, 1, figsize=(15, 15))
 
 plotting.plot_stat_map(
     ctrl_diff_mean_img,
@@ -154,7 +154,7 @@ plotting.plot_stat_map(
     vmax=0.5,
 )
 
-plt.tight_layout()
+#plt.tight_layout()
 plt.savefig("diff_mean.png")
 
 
