@@ -35,6 +35,11 @@ print(v)
 sess_diff_fmri = np.zeros((len(sublist), size_msk))
 
 tg_or_wt = np.zeros((len(sublist), 1))
+num_time=600
+num_sub = 30
+fmri_data_all_sub = np.zeros((size_msk, num_time, num_sub))
+
+nsub = 0
 
 for i, sub in enumerate(sublist):
 
@@ -75,88 +80,31 @@ for i, sub in enumerate(sublist):
     f1 = nb.load(sub1)
     f2 = nb.load(sub2)
 
-    f1img = f1.get_fdata()[msk].T
-    f2img = f2.get_fdata()[msk].T
-
-    print(f1img.shape)
-    print(f2img.shape)
-
-    f1img, _, _ = normalizeData(f1img)
-    f2img, _, _ = normalizeData(f2img)
-
-    diff = np.sqrt(np.sum((f1img - f2img) ** 2, axis=0))
-    corr = np.sum(f1img * f2img, axis=0)
-
-    f2img_sync, _ = brainSync(f1img, f2img)
-
-    diff_sync = np.sqrt(np.sum((f1img - f2img_sync) ** 2, axis=0))
-    corr_sync = np.sum(f1img * f2img_sync, axis=0)
-
-    vout = np.zeros(v.shape)
-    vout[msk] = diff
-
-    sess_diff_fmri[i, :] = diff
-
-    unsyn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
-    unsyn_img.to_filename("unsynced.nii.gz")
-
-    vout[msk] = corr
-    unsyn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
-    unsyn_img.to_filename("corr_unsynced.nii.gz")
-
-    vout = np.zeros(v.shape)
-    vout[msk] = diff_sync
-
-    syn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
-    syn_img.to_filename("synced.nii.gz")
-
-    vout[msk] = corr_sync
-    syn_img = nb.Nifti1Image(vout, f1.affine, f1.header)
-    syn_img.to_filename("corr_synced.nii.gz")
-
-    # Plot before and after syncing and save as png files
-    from nilearn import plotting
-    import matplotlib.pyplot as plt
-
-    fig, ax = plt.subplots(1, 2, figsize=(20, 5))
-
-    plotting.plot_stat_map(
-        unsyn_img,
-        bg_img=atlas,
-        threshold=0,
-        alpha=0.5,
-        display_mode="ortho",
-        dim=-0.5,
-        title="Unsynced",
-        axes=ax[0],
-    )
-    plotting.plot_stat_map(
-        syn_img,
-        bg_img=atlas,
-        threshold=0,
-        alpha=0.5,
-        display_mode="ortho",
-        dim=-0.5,
-        title="Synced",
-        axes=ax[1],
-    )
-
-    plt.tight_layout()
-    # add title
-    plt.suptitle(f'{sub.split("/")[-1]}')
-    plt.savefig(f'{sub.split("/")[-1]}_synced.png')
-
-    # plt.show()
-    # plt.pause(1)
-    plt.close()
+    f1img = f1.get_fdata()[msk]
+    f2img = f2.get_fdata()[msk]
 
 
-num_time = f1img.shape[1]
-num_sub = sess_diff_fmri[0]
+    fmri_data_all_sub[:, :, nsub] = f1img
+    nsub += 1
+    fmri_data_all_sub[:, :, nsub] = f2img
+    nsub += 1
 
-print(f"num_time: {num_time}, num_sub: {num_sub}")
+
+
 # save the data
-np.savez_compressed("sess_diff_fmri.npz", sess_diff_fmri=sess_diff_fmri, tg_or_wt=tg_or_wt, sublist=sublist, msk=msk, atlas=atlas)
+np.savez("sess_diff_fmri_all_sub.npz", fmri_data_all_sub=fmri_data_all_sub, tg_or_wt=tg_or_wt, sublist=sublist, msk=msk, atlas=atlas)
 
-print(f"Done Reading the data")
+# load the data
+data = np.load("sess_diff_fmri_all_sub.npz")
+fmri_data_all_sub = data["fmri_data_all_sub"]
+tg_or_wt = data["tg_or_wt"][:, 0]
+
+msk = data["msk"]
+atlas = str(data["atlas"])
+
+# do group brainSync
+
+ctrl_data = fmri_data_all_sub[:, :, tg_or_wt == 1]
+
+
 
