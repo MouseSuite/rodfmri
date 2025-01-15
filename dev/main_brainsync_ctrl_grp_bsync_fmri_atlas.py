@@ -34,10 +34,10 @@ size_msk = np.sum(msk)  # size of mask
 print(v)
 sess_diff_fmri = np.zeros((len(sublist), size_msk))
 
-tg_or_wt = np.zeros((len(sublist), 1))
-num_time=600
-num_sub = 30
+num_time = 600
+num_sub = 46
 fmri_data_all_sub = np.zeros((size_msk, num_time, num_sub))
+tg_or_wt = np.zeros((num_sub, 1))
 
 nsub = 0
 
@@ -51,13 +51,18 @@ for i, sub in enumerate(sublist):
     participant_data = part_df[part_df["participant_id"] == s]
 
     if participant_data["genotype"].values[0] == "C57BL/6":
-        tg_or_wt[i] = 1
+        tg_or_wt[nsub] = 1
+        tg_or_wt[nsub + 1] = 1
     elif participant_data["genotype"].values[0] == "3xTG":
-        tg_or_wt[i] = 2
+        tg_or_wt[nsub] = 2
+        tg_or_wt[nsub + 1] = 2
     elif participant_data["genotype"].values[0] == "3xTG_hydrocephalus":
-        tg_or_wt[i] = 3
+        tg_or_wt[nsub] = 3
+        tg_or_wt[nsub + 1] = 3
     else:
-        tg_or_wt[i] = -1
+        tg_or_wt[nsub] = -1
+        tg_or_wt[nsub + 1] = -1
+
         # this is error! show error message and exit
         print(f'Error: Genotype not found for {sub.split("/")[-1]}')
         exit()
@@ -73,7 +78,8 @@ for i, sub in enumerate(sublist):
     if not (os.path.isfile(sub1) and os.path.isfile(sub2)):
 
         print(f"Both sessions not found in {s}\n Skipping...")
-        tg_or_wt[i] = -2
+        tg_or_wt[nsub] = -2
+        tg_or_wt[nsub + 1] = -2
 
         continue
 
@@ -83,16 +89,21 @@ for i, sub in enumerate(sublist):
     f1img = f1.get_fdata()[msk]
     f2img = f2.get_fdata()[msk]
 
-
     fmri_data_all_sub[:, :, nsub] = f1img
     nsub += 1
     fmri_data_all_sub[:, :, nsub] = f2img
     nsub += 1
 
 
-
 # save the data
-np.savez("sess_diff_fmri_all_sub.npz", fmri_data_all_sub=fmri_data_all_sub, tg_or_wt=tg_or_wt, sublist=sublist, msk=msk, atlas=atlas)
+np.savez(
+    "sess_diff_fmri_all_sub.npz",
+    fmri_data_all_sub=fmri_data_all_sub,
+    tg_or_wt=tg_or_wt,
+    sublist=sublist,
+    msk=msk,
+    atlas=atlas,
+)
 
 # load the data
 data = np.load("sess_diff_fmri_all_sub.npz")
@@ -107,4 +118,20 @@ atlas = str(data["atlas"])
 ctrl_data = fmri_data_all_sub[:, :, tg_or_wt == 1]
 
 
+from brainsync import groupBrainSync
 
+# swap 0 and 1st dimension
+ctrl_data = np.swapaxes(ctrl_data, 0, 1)  # Make it TxVxS
+
+# measure time taken
+import time
+
+start_time = time.time()
+D = groupBrainSync(ctrl_data)
+end_time = time.time()
+
+print(f"Time taken for groupBrainSync: {end_time - start_time} seconds")
+
+np.savez(
+    "group_diff_fmri.npz", D=D, tg_or_wt=tg_or_wt, sublist=sublist, msk=msk, atlas=atlas
+)
