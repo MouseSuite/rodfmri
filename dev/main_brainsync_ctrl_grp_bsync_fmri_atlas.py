@@ -10,7 +10,8 @@ import numpy as sp
 from tqdm import tqdm
 import glob
 import os
-
+from brainsync import groupBrainSync
+import time
 
 sublist = glob.glob("/deneb_disk/RodentTools/data/openneuro/ds001890/sub*")
 
@@ -118,20 +119,28 @@ atlas = str(data["atlas"])
 ctrl_data = fmri_data_all_sub[:, :, tg_or_wt == 1]
 
 
-from brainsync import groupBrainSync
-
 # swap 0 and 1st dimension
 ctrl_data = np.swapaxes(ctrl_data, 0, 1)  # Make it TxVxS
 
 # measure time taken
-import time
 
 start_time = time.time()
-D = groupBrainSync(ctrl_data)
+X2, Os, Costdif, TotalError = groupBrainSync(ctrl_data)
 end_time = time.time()
 
 print(f"Time taken for groupBrainSync: {end_time - start_time} seconds")
 
 np.savez(
-    "group_diff_fmri.npz", D=D, tg_or_wt=tg_or_wt, sublist=sublist, msk=msk, atlas=atlas
+    "group_diff_fmri.npz",
+    X2=X2,
+    Os=Os,
+    Costdif=Costdif,
+    TotalError=TotalError,
+    tg_or_wt=tg_or_wt,
+    sublist=sublist,
+    msk=msk,
+    atlas=atlas,
+    fmri_data_all_sub=fmri_data_all_sub,
+    ctrl_data=ctrl_data,
 )
+
