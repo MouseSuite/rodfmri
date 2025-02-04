@@ -41,17 +41,14 @@ Update the paths in the scripts to match your local setup, such as the paths to 
 
 ### Preprocess fMRI data
 
-To preprocess fMRI data using FSL, run the [main_openneuro_preproc.py](http://_vscodecontentref_/2) ) script:
-```sh
-python dev/main_openneuro_preproc.py
-```
+To preprocess fMRI data using FSL, run the ```dev/main_openneuro_preproc.py```
 
 
 ### Perform BrainSync
-To perform BrainSync on fMRI data, use the dev/main_brainsync.py script:
+To perform BrainSync on fMRI data, use the ```dev/main_brainsync.py script```:
 
 ### Group Analysis
-To perform group analysis, use the dev/main_group_diff_3month_6month.py script:
+To perform group analysis, use the ```dev/main_group_diff_3month_6month.py``` script:
 
 ## Contribution guidelines
 ###Writing tests
