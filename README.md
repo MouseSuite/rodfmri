@@ -44,7 +44,7 @@ Update the paths in the scripts to match your local setup, such as the paths to 
 To preprocess fMRI data using FSL, run the [main_openneuro_preproc.py](http://_vscodecontentref_/2) ) script:
 ```sh
 python dev/main_openneuro_preproc.py
-
+```
 
 
 ### Perform BrainSync
