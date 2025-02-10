@@ -28,9 +28,9 @@ The preprocessing algorithm consists of the following steps:
 6. **Band-Pass Filtering**: Apply band-pass filtering to the grand mean scaled fMRI image using AFNI's `3dBandpass` tool.
 
 7. Registration to Atlas:
-  - Create an fMRI mean image using AFNI's `3dTstat` tool.
- - Register the T1 image to the fMRI mean image using our machine learning-based tool or FSL's `flirt` tool.
- - Register the T1 image to the atlas using FSL's `flirt` tool.
- - Warp the fMRI data to the atlas using FSL's `flirt` tool.
+   - Create an fMRI mean image using AFNI's `3dTstat` tool.
+   - Register the T1 image to the fMRI mean image using our machine learning-based tool or FSL's `flirt` tool.
+   - Register the T1 image to the atlas using FSL's `flirt` tool.
+   - Warp the fMRI data to the atlas using FSL's `flirt` tool.
 
 By following these steps, the fMRI data is preprocessed and aligned to a standard anatomical space, making it ready for further analysis. 
