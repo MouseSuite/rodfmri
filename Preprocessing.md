@@ -9,13 +9,13 @@ The `fmri_proc_fsl.py` script preprocesses fMRI data using a combination of FSL 
 ## Usage
 To use the fmri_proc_fsl.py script, call the fmri_proc_fsl function with the appropriate arguments:
 
-. `t1_orig`: Path to the original T1-weighted anatomical image.
-. `fmri`: Path to the fMRI image.
-. `BrainSuitePath`: Path to the BrainSuite installation directory.
-. `atlas`: Path to the atlas image.
-. `hp`: High-pass filter cutoff frequency (default: 0.005 Hz).
-. `lp`: Low-pass filter cutoff frequency (default: 0.1 Hz).
-. `FWHM`: Full-width at half-maximum for spatial smoothing (default: 0.6 mm).
+- `t1_orig`: Path to the original T1-weighted anatomical image.
+- `fmri`: Path to the fMRI image.
+- `BrainSuitePath`: Path to the BrainSuite installation directory.
+- `atlas`: Path to the atlas image.
+- `hp`: High-pass filter cutoff frequency (default: 0.005 Hz).
+- `lp`: Low-pass filter cutoff frequency (default: 0.1 Hz).
+- `FWHM`: Full-width at half-maximum for spatial smoothing (default: 0.6 mm).
 
 ## Algorithm
 The preprocessing algorithm consists of the following steps:
