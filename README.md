@@ -41,8 +41,11 @@ Update the paths in the scripts to match your local setup, such as the paths to 
 
 ### Preprocess fMRI data
 
-To preprocess fMRI data using FSL, run the ```dev/main_openneuro_preproc.py```
-
+To preprocess fMRI data, run the ```dev/main_openneuro_preproc.py``` script. The script processes fMRI data for each subject and session aligning to an atlas.
+```
+python main_openneuro_preproc.py
+```
+The code that does the preprocessing is ```fmri_proc_fsl.py```. The steps used for preprocessing are documented in [Preprocessing.md](Preprocessing.md)
 
 ### Perform BrainSync
 To perform BrainSync on fMRI data, use the ```dev/main_brainsync.py script```:
