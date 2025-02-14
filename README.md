@@ -81,13 +81,13 @@ To preprocess fMRI data, run the ```dev/main_openneuro_preproc.py``` script. The
 ```
 python main_openneuro_preproc.py
 ```
-The code that does the preprocessing is ```fmri_proc_fsl.py```. The steps used for preprocessing are documented in [Preprocessing.md](Preprocessing.md)
+The code that does the preprocessing is ```fmri_proc_fsl.py```.
 
-### Perform BrainSync
+
+### Sample scripts for statistics and group analysis
+To perform group analysis, use the ```dev/main_group_diff_3month_6month.py``` script:
 To perform BrainSync on fMRI data, use the ```dev/main_brainsync.py script```:
 
-### Group Analysis
-To perform group analysis, use the ```dev/main_group_diff_3month_6month.py``` script:
 
 ### Who do I talk to?
 For questions or support, contact ajoshi@usc.edu.
