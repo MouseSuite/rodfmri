@@ -89,8 +89,15 @@ To perform group analysis, use the ```dev/main_group_diff_3month_6month.py``` sc
 To perform BrainSync on fMRI data, use the ```dev/main_brainsync.py script```:
 
 
-### Who do I talk to?
-For questions or support, contact ajoshi@usc.edu.
+
+## License
+This project is licensed under the GPL (V2) License - see the [LICENSE](License_gpl-2.0.txt) file for details.
+
+## Support
+For technical support, please contact [ajoshi@usc.edu](mailto:ajoshi@usc.edu).
+
+## Acknowledgments
+- This project is supported by NIH Grant R01-NS121761 (PIs: David Shattuck and Allan MacKenzie-Graham).
 
 
 
