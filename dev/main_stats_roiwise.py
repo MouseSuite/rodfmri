@@ -1,6 +1,5 @@
 import numpy as np
 import nibabel as nb
-from scipy import stats
 from statsmodels.stats.multitest import multipletests
 
 
@@ -17,48 +16,37 @@ sublist = data["sublist"]
 msk = data["msk"]
 atlas = str(data["atlas"])
 
-msk_ind = np.where(msk.flatten()>0)[0]
-
-v = nb.load(atlas)
-atlas = '/deneb_disk/RodentTools/Atlases/DSURQE_40micron_UCLA/DSURQE_40micron_64.label.nii.gz'
 # Load the atlas labels
-atlas_labels = nb.load(atlas).get_fdata()[msk]
+atlas_labels = nb.load(atlas).get_fdata()
 
 # Initialize arrays to store ROI-wise statistics
-unique_rois = np.unique(atlas_labels)
-# remove 0 id from unuque_rois
-unique_rois = unique_rois[unique_rois != 0]
-
+unique_rois = np.unique(atlas_labels[atlas_labels > 0])
 roi_t_stat = np.zeros(len(unique_rois))
 roi_p_val = np.zeros(len(unique_rois))
 
 # Perform ROI-wise t-tests
 for i, roi in enumerate(unique_rois):
-    roi_mask_ind = np.where(atlas_labels == roi)[0]
-    ctrl_diff_roi = np.mean(sess_diff_fmri[tg_or_wt == 1, :][:, roi_mask_ind],axis=1)
-    tg_diff_roi = np.mean(sess_diff_fmri[tg_or_wt == 2, :][:, roi_mask_ind], axis=1)
+    roi_mask = atlas_labels == roi
+    ctrl_diff_roi = sess_diff_fmri[tg_or_wt == 1, :][:, roi_mask]
+    tg_diff_roi = sess_diff_fmri[tg_or_wt == 2, :][:, roi_mask]
     
     t_stat, p_val = stats.ttest_ind(tg_diff_roi, ctrl_diff_roi, axis=0)
     
-    print(p_val,end="\n")
     # Average the t-statistics and p-values within the ROI
-    roi_t_stat[i] = t_stat
-    roi_p_val[i] = p_val
+    roi_t_stat[i] = np.nanmean(t_stat)
+    roi_p_val[i] = np.nanmean(p_val)
 
 # Correct for multiple comparisons
 p_val_corr = multipletests(roi_p_val, alpha=0.05, method="fdr_bh")
 roi_p_val = p_val_corr[1]
 
 # Create ROI-wise t-stat and p-val images
-roi_t_stat_img = np.zeros(nb.load(atlas).shape)
-roi_p_val_img = np.ones(nb.load(atlas).shape)
-atlas_labels = nb.load(atlas).get_fdata()
+roi_t_stat_img = np.zeros(atlas_labels.shape)
+roi_p_val_img = np.zeros(atlas_labels.shape)
 
 for i, roi in enumerate(unique_rois):
-    roi_mask=np.where(atlas_labels==roi)[0]
     roi_t_stat_img[atlas_labels == roi] = roi_t_stat[i]
     roi_p_val_img[atlas_labels == roi] = roi_p_val[i]
-    # roi_p_val_img.ravel()[msk_ind[roi_mask]] = roi_p_val[i]
 
 t_stat_img = nb.Nifti1Image(roi_t_stat_img, v.affine, v.header)
 t_stat_img.to_filename("t_stat.nii.gz")

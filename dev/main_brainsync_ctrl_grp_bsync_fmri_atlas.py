@@ -44,11 +44,11 @@ nsub = 0
 
 for i, sub in enumerate(sublist):
 
+    print(f"Processing {sub}, {i} out of {len(sublist)}")
     # part_df['participant_id']):
 
     # sub = f'/deneb_disk/RodentTools/data/openneuro/ds001890/sub-jgrAD{s}'
     s = sub.split("/")[-1][9:]
-    print(sub)
     participant_data = part_df[part_df["participant_id"] == s]
 
     if participant_data["genotype"].values[0] == "C57BL/6":
