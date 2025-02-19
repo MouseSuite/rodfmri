@@ -43,10 +43,10 @@ Update the paths in the scripts to match your local setup, such as the paths to 
 ### Preprocess fMRI data
 
 
-The `fmri_proc_fsl.py` script preprocesses fMRI data using a combination of FSL and BrainSuite tools. The preprocessing steps include resampling the T1 image, brain extraction, masking the fMRI image, spatial smoothing, grand mean scaling, band-pass filtering, and registration to an atlas. These steps are essential for preparing the fMRI data for further analysis.
+The `fmri_proc.py` script preprocesses fMRI data using a combination of FSL and BrainSuite tools. The preprocessing steps include resampling the T1 image, brain extraction, masking the fMRI image, spatial smoothing, grand mean scaling, band-pass filtering, and registration to an atlas. These steps are essential for preparing the fMRI data for further analysis.
 
 ## Usage
-To use the fmri_proc_fsl.py script, call the fmri_proc_fsl function with the appropriate arguments:
+To use the fmri_proc.py script, call the fmri_proc function with the appropriate arguments:
 
 - `t1_orig`: Path to the original T1-weighted anatomical image.
 - `fmri`: Path to the fMRI image.
