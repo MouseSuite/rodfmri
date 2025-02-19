@@ -4,7 +4,7 @@ import nibabel as nib
 
 
 
-def fmri_proc_fsl(t1_orig, fmri, BrainSuitePath,atlas,hp = 0.005,lp = 0.1,FWHM = 0.6):
+def fmri_proc(t1_orig, fmri, BrainSuitePath,atlas,hp = 0.005,lp = 0.1,FWHM = 0.6):
 
     # Get TR
     x = subprocess.check_output([f'3dinfo -tr {fmri}'],shell=True)
