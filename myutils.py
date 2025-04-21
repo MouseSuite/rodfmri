@@ -36,6 +36,6 @@ def plot_fmri_overlay(fmri_image_path, anatomical_image_path,
     
     # Plot overlay
     plotting.plot_stat_map(fmri_img_3d, bg_img=anat_img, threshold=threshold, alpha=0.5,
-                           display_mode='ortho', dim=-0.5, title=f'fmri image:{subid}', output_file=fmri_image_path[:-7] + '.png', cut_coords=(0, 0, 0))  
+                           display_mode='ortho', dim=-0.5, title=f'fmri image:{subid}', output_file=fmri_image_path[:-7] + '.png')  
     #plotting.show()
     #plt.pause(1)  # Pause for a short time to allow the plot to render
