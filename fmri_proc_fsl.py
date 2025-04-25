@@ -37,6 +37,13 @@ def fmri_proc(t1_orig, fmri, BrainSuitePath,atlas,hp = 0.005,lp = 0.1,FWHM = 0.6
 
 
     if fmri_mask_custom is not None:
+        # check if the resolution of the custom mask is same as the fmri, if not resample mask to fMRI image space
+        fmri_mask_resampled = fmri_mask_custom[:-7] + '_resampled.nii.gz'
+        resample_cmd = f'flirt -in {fmri_mask_custom} -ref {fmri} -applyxfm -usesqform -out {fmri_mask_resampled}'
+        os.system(resample_cmd)
+        fmri_mask_custom = fmri_mask_resampled
+ 
+
         # Use custom mask
         fmri_mask = fmri_mask_custom
         fmri_masked = fmri[:-7] + '_masked.nii.gz'
